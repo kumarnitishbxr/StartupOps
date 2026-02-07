@@ -1,27 +1,23 @@
-import mongoose  from "mongoose";
+import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: true,
-        },
-        email: {
-            type: String,
-            unique: true,
-            required: true,
-            match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
-        },
-        password:{
-            type: String,
-            required: true,
-            minLength: 6
-        }
+const userSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        index: true
     },
-    {
-        timestamps: true
-    }
+    password: { type: String, required: true },
+    role: {
+        type: String,
+        enum: ["FOUNDER", "ADMIN", "MEMBER"],
+        default: "MEMBER"
+    },
+    isActive: { type: Boolean, default: true }
+}, { timestamps: true }
 );
 
-const User = mongoose.model('User',userSchema);
-export default User;
+const User =  mongoose.model("User", userSchema);
+export default User
