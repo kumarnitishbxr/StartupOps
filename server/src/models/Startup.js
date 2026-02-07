@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 
 const StartupSchema = new mongoose.Schema({
 
-   name: { type: String, required: true },
+   name: { type: String, required: true, unique:true },
 
    description: String,
 
