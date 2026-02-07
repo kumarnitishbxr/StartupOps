@@ -1,3 +1,7 @@
+import mongoose from "mongoose"
+
+
+
 const milestoneSchema = new mongoose.Schema({
    startupId: {
       type: mongoose.Schema.Types.ObjectId,
