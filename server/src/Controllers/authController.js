@@ -2,13 +2,14 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import redisClient from "../config/redis.js";
+import { validate } from "../utils/validate.js";
 
 
 
 const cookieOptions = {
   httpOnly: true,
-  secure: true,      
-  sameSite: "none", 
+  secure: true,
+  sameSite: "none",
   maxAge: 24 * 60 * 60 * 1000
 };
 
@@ -24,6 +25,13 @@ const Register = async (req, res) => {
       });
     }
 
+    const result = validate(req.body);
+    if (!result.success) {
+      return res.status(400).json({
+        message: result.message,
+      });
+    }
+
     const existUser = await User.findOne({ email });
     if (existUser) {
       return res.status(400).json({
@@ -35,13 +43,12 @@ const Register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
-      email,
+      ...req.body,
       password: hashedPassword
     });
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.SECRET_KEY,
       { expiresIn: process.env.JWT_EXP }
     );
@@ -54,7 +61,7 @@ const Register = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("🔥 REGISTER ERROR:", error);
+    // console.error("REGISTER ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -92,7 +99,7 @@ const Login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role:user.role },
       process.env.SECRET_KEY,
       { expiresIn: process.env.JWT_EXP }
     );
