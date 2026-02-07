@@ -13,7 +13,7 @@ const UserStartupPreview = () => {
     if (isAuthenticated) {
       dispatch(fetchStartups());
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, dispatch]);
 
   if (!isAuthenticated) return null;
 
@@ -30,7 +30,7 @@ const UserStartupPreview = () => {
           <Link
             key={s._id}
             to={`/startups/${s._id}`}
-            className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-2xl shadow hover:shadow-xl transition border border-gray-200 hover:-translate-y-2"
+            className="bg-linear-to-r from-blue-50 to-purple-50 p-6 rounded-2xl shadow hover:shadow-xl transition border border-gray-200 hover:-translate-y-2"
           >
 
             <h3 className="text-xl font-bold mb-1">

@@ -15,7 +15,6 @@ const cookieOptions = {
 
 
 const Register = async (req, res) => {
-  
   try {
     const { name, email, password } = req.body;
 
@@ -41,7 +40,6 @@ const Register = async (req, res) => {
       });
     }
 
-    // console.log('first')
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
@@ -50,7 +48,7 @@ const Register = async (req, res) => {
     });
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: 'FOUNDER' },
+      { id: user._id, email: user.email, role: user.role },
       process.env.SECRET_KEY,
       { expiresIn: process.env.JWT_EXP }
     );
@@ -59,17 +57,7 @@ const Register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "User registered successfully",
-      user:{
-        _id:user._id,
-        name:user.name,
-        email:user.email,
-        role:user.role,
-        isActive:user.isActive,
-        startups:user.startups,
-        createdAt:user.createdAt,
-        updatedAt:user.updatedAt
-      }
+      message: "User registered successfully"
     });
 
   } catch (error) {
@@ -120,17 +108,7 @@ const Login = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "User login successful",
-      user:{
-        _id:user._id,
-        name:user.name,
-        email:user.email,
-        role:user.role,
-        isActive:user.isActive,
-        startups:user.startups,
-        createdAt:user.createdAt,
-        updatedAt:user.updatedAt
-      }
+      message: "User login successful"
     });
 
   } catch (error) {
@@ -145,13 +123,11 @@ const Login = async (req, res) => {
 
 const Logout = async (req, res) => {
   try {
-    
+
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "No token, authorization denied" });
     }
-
-    const payload = jwt.decode(token, process.env.SECRET_KEY)
 
     await redisClient.set(`token:${token}`, "blocked");
     await redisClient.expireAt(`token:${token}`, payload.exp);
