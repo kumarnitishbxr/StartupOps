@@ -37,7 +37,7 @@ export default function LoginPage() {
   }, [isAuthenticated, navigate]);
 
   const sendData = (data) => {
-    console.log(data)
+    // console.log(data)
     dispatch(loginUser(data));
   };
 

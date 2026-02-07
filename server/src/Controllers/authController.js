@@ -176,4 +176,33 @@ const Logout = async (req, res) => {
   }
 };
 
-export { Register, Login, Logout };
+
+const checkUser = async (req, res)=>{
+
+  try {
+    
+    const reply = req.user
+    res.status(200).json({
+      success: true,
+      message: "User Authenticated successfully",
+      user:{
+        _id:reply._id,
+        name:reply.name,
+        email:reply.email,
+        role:reply.role,
+        isActive:reply.isActive,
+        startups:reply.startups,
+        createdAt:reply.createdAt,
+        updatedAt:reply.updatedAt
+      }
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Auth failed",
+      error: error.message
+    })
+  }
+}
+
+export { Register, Login, Logout, checkUser };

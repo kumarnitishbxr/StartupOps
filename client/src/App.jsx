@@ -1,30 +1,36 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Dashboard from "./pages/dashboard/Dashboard";
-
-
-
 import LoginPage from "./pages/auth/Login";
 import RegisterPage from "./pages/auth/Register";
 import Home from "./pages/Home";
-import api from "./API/authapi";
-
-
+import { checkAuth } from "./features/authSlice";
 
 function App() {
+
+  const navigate = useNavigate()
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+  if(isAuthenticated) {
+    navigate("/");
+  }
 
   if (loading) {
     return <div className="text-white text-center mt-20">Checking auth...</div>;
   }
 
+
   return (
-    <Router>
       <Routes>
         <Route
           path="/"
-          element={isAuthenticated ? <Dashboard/> : <Navigate to="/login" />}
+          element={isAuthenticated ? <Home/> : <Navigate to="/login" />}
         />
         <Route
           path="/login"
@@ -35,7 +41,6 @@ function App() {
           element={isAuthenticated ? <Navigate to="/" /> : <RegisterPage />}
         />
       </Routes>
-    </Router>
   );
 
 
