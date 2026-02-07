@@ -17,15 +17,15 @@ const registerSchema = z.object({
 export default function RegisterPage() {
   // eslint-disable-next-line no-unused-vars
   const [showPassword, setShowPassword] = useState(false);
-   const [focusedField, setFocusedField] = useState(null);
+  const [focusedField, setFocusedField] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-  if (isAuthenticated) navigate("/login");
-}, [isAuthenticated, navigate]);
+    if (isAuthenticated) navigate("/");
+  }, [isAuthenticated, navigate]);
 
 
   const {
