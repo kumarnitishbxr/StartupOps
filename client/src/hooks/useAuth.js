@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../API/axiosClient";
+import api from "../API/authapi";
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
