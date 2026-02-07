@@ -43,11 +43,12 @@ export const addStartup = createAsyncThunk(
   "startup/add",
   async (startupData, { rejectWithValue, getState }) => {
     try {
-      const token = getState().auth.token;
+      const token = getState().auth?.token;
 
       const response = await axios.post(API, startupData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+          Authorization: token ? `Bearer ${token}` : "",
         },
       });
 

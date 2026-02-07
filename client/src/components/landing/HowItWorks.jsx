@@ -1,93 +1,234 @@
-import React from "react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+import {
+  FaUserPlus,
+  FaRocket,
+  FaTasks,
+  FaChartLine,
+  FaChevronDown,
+  FaChevronUp,
+} from "react-icons/fa";
 
 const steps = [
   {
-    number: "01",
-    title: "Create Account",
-    desc: "Sign up on StartupOps and set up your personal workspace in seconds.",
-    icon: "👤",
+    icon: <FaUserPlus />,
+    title: "Create Your Account",
+    short: "Sign up on StartupOps and build your founder profile.",
+    details: [
+      "Register using email or social login",
+      "Complete founder profile",
+      "Choose your role (Founder/Mentor)",
+      "Access personalized dashboard",
+    ],
+    color: "text-blue-600",
   },
   {
-    number: "02",
-    title: "Create Your Startup",
-    desc: "Add your startup idea, industry, stage and basic details to get started.",
-    icon: "💡",
+    icon: <FaRocket />,
+    title: "Register Your Startup",
+    short: "Add business details and set up your startup workspace.",
+    details: [
+      "Enter startup information",
+      "Upload logo and branding",
+      "Define stage and industry",
+      "Create your first roadmap",
+    ],
+    color: "text-purple-600",
   },
   {
-    number: "03",
-    title: "Manage Tasks",
-    desc: "Break down your vision into actionable tasks and track progress easily.",
-    icon: "✅",
+    icon: <FaTasks />,
+    title: "Manage Operations",
+    short: "Organize tasks and collaborate with your team.",
+    details: [
+      "Create task boards",
+      "Assign team members",
+      "Track milestones",
+      "Collaborate with mentors",
+    ],
+    color: "text-green-600",
   },
   {
-    number: "04",
-    title: "Track Growth",
-    desc: "Use analytics and dashboards to monitor milestones and improve performance.",
-    icon: "📈",
+    icon: <FaChartLine />,
+    title: "Track Progress",
+    short: "Use analytics to monitor startup growth.",
+    details: [
+      "View performance metrics",
+      "Analyze growth trends",
+      "Generate reports",
+      "Plan next milestones",
+    ],
+    color: "text-indigo-600",
   },
 ];
 
 const HowItWorks = () => {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const toggleStep = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
-    <section id="howitworks" className="py-24 bg-gray-50">
-
-      <div className="text-center mb-16 px-6">
-        <h2 className="text-4xl font-extrabold mb-4">
-          How StartupOps Works
-        </h2>
-
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          A simple and structured workflow designed for founders, students and mentors to transform ideas into real startups.
-        </p>
-      </div>
-
+    <section className="py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.h2
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="text-3xl font-bold text-center mb-2"
+        >
+          How StartupOps Works
+        </motion.h2>
+
+        <p className="text-center text-gray-600 mb-14">
+          Click on any step to explore details
+        </p>
+
+        <div className="relative">
+
+          {/* PERFECT CENTER LINE */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 top-0 h-full w-[2px] bg-gray-200"></div>
 
           {steps.map((step, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition duration-300 hover:-translate-y-2 border border-gray-100"
+              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4 }}
+              className="relative mb-16 flex items-center justify-between"
             >
 
-              <div className="flex justify-between items-center mb-4">
-
-                <div className="text-4xl">
+              {/* ICON NODE - PERFECT CENTER */}
+              <div className="absolute left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-200 rounded-full h-14 w-14 flex items-center justify-center z-10 shadow">
+                <span className={`text-2xl ${step.color}`}>
                   {step.icon}
-                </div>
-
-                <div className="text-3xl font-extrabold text-gray-200">
-                  {step.number}
-                </div>
-
+                </span>
               </div>
 
-              <h3 className="text-xl font-bold mb-2">
-                {step.title}
-              </h3>
+              {/* LEFT SIDE CARD */}
+              {index % 2 === 0 && (
+                <div className="w-[46%] pr-10">
+                  <div
+                    onClick={() => toggleStep(index)}
+                    className="p-6 bg-white rounded-2xl shadow cursor-pointer hover:shadow-lg transition"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="text-xl font-semibold">
+                          {step.title}
+                        </h3>
 
-              <p className="text-gray-600">
-                {step.desc}
-              </p>
+                        <p className="text-gray-600 mt-1">
+                          {step.short}
+                        </p>
+                      </div>
 
-            </div>
+                      <div className="text-gray-500">
+                        {openIndex === index ? (
+                          <FaChevronUp />
+                        ) : (
+                          <FaChevronDown />
+                        )}
+                      </div>
+                    </div>
+
+                    <AnimatePresence>
+                      {openIndex === index && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="mt-4 overflow-hidden"
+                        >
+                          <ul className="list-disc ml-5 text-gray-600 space-y-2">
+                            {step.details.map((d, i) => (
+                              <li key={i}>{d}</li>
+                            ))}
+                          </ul>
+
+                          <div className="mt-3 text-sm font-medium text-blue-600">
+                            Step {index + 1} of {steps.length}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              )}
+
+              {/* EMPTY SPACE FOR ALIGNMENT */}
+              <div className="w-[8%]"></div>
+
+              {/* RIGHT SIDE CARD */}
+              {index % 2 !== 0 && (
+                <div className="w-[46%] pl-10">
+                  <div
+                    onClick={() => toggleStep(index)}
+                    className="p-6 bg-white rounded-2xl shadow cursor-pointer hover:shadow-lg transition"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="text-xl font-semibold">
+                          {step.title}
+                        </h3>
+
+                        <p className="text-gray-600 mt-1">
+                          {step.short}
+                        </p>
+                      </div>
+
+                      <div className="text-gray-500">
+                        {openIndex === index ? (
+                          <FaChevronUp />
+                        ) : (
+                          <FaChevronDown />
+                        )}
+                      </div>
+                    </div>
+
+                    <AnimatePresence>
+                      {openIndex === index && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="mt-4 overflow-hidden"
+                        >
+                          <ul className="list-disc ml-5 text-gray-600 space-y-2">
+                            {step.details.map((d, i) => (
+                              <li key={i}>{d}</li>
+                            ))}
+                          </ul>
+
+                          <div className="mt-3 text-sm font-medium text-blue-600">
+                            Step {index + 1} of {steps.length}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              )}
+
+            </motion.div>
           ))}
 
         </div>
 
-      </div>
-
-      {/* Bottom Call To Action */}
-      <div className="text-center mt-16">
-        <a
-          href="/startups/create"
-          className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition shadow-lg"
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="text-center mt-16"
         >
-          Start Your Journey Now
-        </a>
-      </div>
+          <a
+            href="/signup"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition"
+          >
+            Get Started Free
+          </a>
+        </motion.div>
 
+      </div>
     </section>
   );
 };

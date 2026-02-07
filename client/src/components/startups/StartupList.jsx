@@ -9,7 +9,9 @@ import StartupCard from "./StartupCard";
 const StartupList = () => {
   const dispatch = useDispatch();
 
-  const { list, loading, error } = useSelector((state) => state.startup);
+  const { list, loading, error } = useSelector(
+    (state) => state.startup
+  );
 
   useEffect(() => {
     dispatch(fetchStartups());
@@ -17,7 +19,6 @@ const StartupList = () => {
 
   return (
     <DashboardLayout>
-
       <div className="p-6">
 
         {/* Header Section */}
@@ -78,7 +79,6 @@ const StartupList = () => {
         </div>
 
       </div>
-
     </DashboardLayout>
   );
 };

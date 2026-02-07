@@ -9,12 +9,15 @@ import Testimonials from "./Testimonials";
 import UserStartupPreview from "./UserStartupPreview";
 import ContactSection from "./ContactSection";
 import Footer from "./Footer";
+import AudienceSection from "./AudienceSection";
 
 const LandingPage = () => {
   return (
     <div>
       <Navbar />
+      <div className="h-[72px] md:h-[80px]"></div>
       <HeroSection />
+      <AudienceSection></AudienceSection>
       <FeaturesSection />
       <HowItWorks />
       <DemoStartups />
