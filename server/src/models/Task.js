@@ -12,8 +12,16 @@ const TaskSchema = new mongoose.Schema({
       ref: "Milestone"
    },
 
-   title: String,
-   description: String,
+   title: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    description: {
+      type: String,
+      trim: true
+    },
 
    assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,10 +31,13 @@ const TaskSchema = new mongoose.Schema({
    status: {
       type: String,
       enum: ["TODO", "PROGRESS", "DONE", "BLOCKED"]
-   }
+   },
+
+   dueDate: Date
 
 }, { timestamps: true });
 
+TaskSchema.index({ startupId: 1, milestoneId: 1 });
 
 const Task = mongoose.model('Task', TaskSchema)
 export default Task
