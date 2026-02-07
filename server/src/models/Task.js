@@ -1,26 +1,43 @@
 import mongoose from 'mongoose'
 
 
-const taskSchema = new mongoose.Schema({
+const TaskSchema = new mongoose.Schema({
    startupId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Startup",
-      required: true,
-      index: true
+      ref: "Startup"
    },
-   title: { type: String, required: true },
-   description: String,
+
+   milestoneId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Milestone"
+   },
+
+   title: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    description: {
+      type: String,
+      trim: true
+    },
+
    assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
    },
+
    status: {
       type: String,
-      enum: ["TODO", "IN_PROGRESS", "DONE"],
-      default: "TODO"
+      enum: ["TODO", "PROGRESS", "DONE", "BLOCKED"]
    },
-   dueDate: Date
-}, { timestamps: true }
-);
 
-export default mongoose.model("Task", taskSchema);
+   dueDate: Date
+
+}, { timestamps: true });
+
+TaskSchema.index({ startupId: 1, milestoneId: 1 });
+
+const Task = mongoose.model('Task', TaskSchema)
+export default Task

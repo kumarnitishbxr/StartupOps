@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import redisClient from "../config/redis.js";
 
 
-const authMiddleware = async (req, res, next) => {
+const adminMiddleware = async (req, res, next) => {
 
    try {
       const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
@@ -19,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
             message: "Invalid token"
          })
 
-      const isBlocked = await redisClient.exists(`Token ${Token}`)
+      const isBlocked = await redisClient.exists(`token ${token}`)
       if (isBlocked)
          return res.status(400).json({
             message: 'Invalid Token'
@@ -31,7 +31,7 @@ const authMiddleware = async (req, res, next) => {
          return res.status(401).json({ message: "User not found" });
       }
 
-      if (user.role != 'ADMIN')
+      if (user.role !== 'ADMIN')
          return res.status(404).josn({
             message: "Unauthorized access",
          })
@@ -44,4 +44,4 @@ const authMiddleware = async (req, res, next) => {
    }
 };
 
-export default authMiddleware;
+export default adminMiddleware;

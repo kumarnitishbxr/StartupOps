@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import redisClient from "../config/redis.js";
 
 
-const authMiddleware = async (req, res, next) => {
+const optionalMiddleware = async (req, res, next) => {
 
   try {
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
@@ -13,13 +13,14 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const payload = jwt.verify(token, process.env.SECRET_KEY);
+    // console.log(payload)
     if (!payload)
       return res.status(404).json({
         success: false,
         message: "Invalid token"
       })
 
-    const isBlocked = await redisClient.exists(`Token ${Token}`)
+    const isBlocked = await redisClient.exists(`token ${token}`)
     if (isBlocked)
       return res.status(400).json({
         message: 'Invalid Token'
@@ -38,4 +39,4 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-export default authMiddleware;
+export default optionalMiddleware;

@@ -9,16 +9,13 @@ export const validate = (data)=>{
       if(!data)
          throw new Error('Data not present')
 
-      const {emailId, password} = data
+      const {email, password} = data
 
-      if(!validator.isEmail(emailId))
+      if(!validator.isEmail(email))
          throw new Error('Invalid Email')
 
       if(!validator.isStrongPassword(password))
          throw new Error('Weak password')
-
-      if(!validator.isMobilePhone(contact))
-         throw new Error('Invalid phone number')
       
       return {success : true}
         
