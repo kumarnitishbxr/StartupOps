@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, NavLink } from 'react-router';
-import { loginUser } from '../stores/authSlice';
+import { loginUser } from '../../features/authSlice';
 
 
 const loginSchema = z.object({
@@ -37,6 +37,7 @@ export default function LoginPage() {
   }, [isAuthenticated, navigate]);
 
   const sendData = (data) => {
+    // console.log(data)
     dispatch(loginUser(data));
   };
 

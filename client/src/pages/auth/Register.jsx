@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form"
 import { useDispatch,useSelector } from 'react-redux';
-import { registerUser } from '../stores/authSlice';
+import registerUser from '../../features/authSlice'
 
 const registerSchema = z.object({
   name: z.string().min(3, "Name should be at least 3 letters"),
