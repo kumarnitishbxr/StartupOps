@@ -11,6 +11,7 @@ import memberRouter from './routes/memberRoutes.js';
 import taskRouter from './routes/taskRoutes.js';
 import milestoneRouter from './routes/milestoneRoutes.js';
 import feedbackRouter from './routes/feedbackRoutes.js';
+import analyticsRouter from './routes/analyticsRoutes.js';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/api/member', memberRouter)
 app.use('/api/tasks', taskRouter);
 app.use('/api/milestone', milestoneRouter)
 app.use('/api/feedback', feedbackRouter)
+app.use('/api/analytics', analyticsRouter)
 
 
 const StartServer = async ()=>{
