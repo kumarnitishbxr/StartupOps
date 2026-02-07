@@ -1,18 +1,38 @@
-import mongoose from "mongoose"
+// models/Milestone.js
+import mongoose from "mongoose";
 
-
-
-const milestoneSchema = new mongoose.Schema({
+const MilestoneSchema = new mongoose.Schema({
    startupId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Startup",
-      required: true
+      required: true,
+      index: true
    },
-   title: { type: String, required: true },
-   description: String,
-   targetDate: Date,
-   isCompleted: { type: Boolean, default: false }
+
+   title: {
+      type: String,
+      required: true,
+      trim: true
+   },
+
+   description: {
+      type: String,
+      trim: true
+   },
+
+   status: {
+      type: String,
+      enum: ["PLANNED", "IN_PROGRESS", "COMPLETED"],
+      default: "PLANNED",
+      index: true
+   },
+
+   startDate: Date,
+   endDate: Date
 }, { timestamps: true }
 );
 
-export default mongoose.model("Milestone", milestoneSchema);
+MilestoneSchema.index({ startupId: 1, status: 1 });
+
+const Milestone = mongoose.model("Milestone", MilestoneSchema);
+export default Milestone
