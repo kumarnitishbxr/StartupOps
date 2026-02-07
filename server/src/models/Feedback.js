@@ -1,26 +1,43 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const FeedbackSchema = new mongoose.Schema({
-   startupId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Startup"
-   },
+      startupId: {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: "Startup",
+         required: true,
+         index: true
+      },
 
-   ideaName: String,
+      ideaTag: {
+         type: String,
+         trim: true
+      },
 
-   feedbackType: {
-      type: String,
-      enum: ["INTERNAL", "EXTERNAL"]
-   },
+      feedbackType: {
+         type: String,
+         enum: ["INTERNAL", "EXTERNAL"],
+         required: true,
+         index: true
+      },
 
-   rating: {
-      type: Number,
-      min: 1,
-      max: 5
-   },
+      givenBy: {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: "User"
+      },
 
-   comment: String
-}, { timestamps: true });
+      rating: {
+         type: Number,
+         min: 1,
+         max: 5
+      },
 
-const Feedback = mongoose.model("Feedback", FeedbackSchema);
-export default Feedback
+      comment: {
+         type: String,
+         trim: true
+      }
+   },{ timestamps: true }
+);
+
+FeedbackSchema.index({ startupId: 1, feedbackType: 1 });
+
+export default mongoose.model("Feedback", FeedbackSchema);
