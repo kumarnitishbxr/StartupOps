@@ -8,7 +8,8 @@ import main from './config/db.js';
 import redisClient from './config/redis.js';
 import startupRouter from './routes/startupRoutes.js';
 import memberRouter from './routes/memberRoutes.js';
-
+import taskRouter from './routes/taskRoutes.js';
+import milestoneRouter from './routes/milestoneRoutes.js';
 
 const app = express();
 
@@ -27,6 +28,8 @@ app.use(cors({
 app.use('/api/auth', authRouter);
 app.use('/api/startup', startupRouter);
 app.use('/api/member', memberRouter)
+app.use('/api/tasks', taskRouter);
+app.use('/api/milestone', milestoneRouter)
 
 
 const StartServer = async ()=>{
