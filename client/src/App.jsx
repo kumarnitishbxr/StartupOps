@@ -20,6 +20,7 @@ function App() {
     return <div className="text-white text-center mt-20">Checking auth...</div>;
   }
 
+
   return (
     <Routes>
       <Route
