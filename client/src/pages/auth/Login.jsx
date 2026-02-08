@@ -377,7 +377,7 @@ export default function LoginPage() {
                     <h1 className="text-6xl lg:text-7xl font-extrabold text-white leading-tight opacity-0 animate-fadeInUp delay-100">
                         Your Gateway
                         <span className="block mt-2 bg-linear-to-r from-emerald-400 via-blue-500 to-pink-500 bg-clip-text text-transparent">
-                        To write ✍️
+                        To build ✍️
                         </span>
                     </h1>
 

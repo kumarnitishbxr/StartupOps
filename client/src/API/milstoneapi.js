@@ -1,6 +1,7 @@
 import api from "./authapi";
 
-export const createMilestone = async (startupId, payload) => {
+export const createMilestone = async ({startupId, payload}) => {
+  console.log(payload)
   const { data } = await api.post(
     `/api/milestone/${startupId}/milestones`,
     payload

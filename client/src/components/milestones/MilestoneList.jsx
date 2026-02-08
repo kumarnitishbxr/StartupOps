@@ -27,8 +27,8 @@ const MilestoneList = ({ startupId }) => {
     }
   };
 
-  const handleStatusChange = async (milestoneId, status) => {
-    await updateMilestoneStatus(milestoneId, status);
+  const handleStatusChange = async ({milestoneId, status}) => {
+    await updateMilestoneStatus({milestoneId, status});
     loadMilestones();
   };
 

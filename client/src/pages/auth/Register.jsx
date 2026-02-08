@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form"
 import { useDispatch,useSelector } from 'react-redux';
-import registerUser from '../../features/authSlice'
+import {registerUser} from '../../features/authSlice'
 
 const registerSchema = z.object({
   name: z.string().min(3, "Name should be at least 3 letters"),
@@ -24,7 +24,7 @@ export default function RegisterPage() {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-  if (isAuthenticated) navigate("/login");
+  if (isAuthenticated) navigate("/dashboard");
 }, [isAuthenticated, navigate]);
 
 
@@ -34,7 +34,8 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(registerSchema) });
 
-  const onSubmit = (data) => {
+  const onSubmit = async(data) => {
+    // console.log(data)
     dispatch(registerUser(data));
   };
 
@@ -234,9 +235,9 @@ export default function RegisterPage() {
 
               {/* Headline */}
               <h1 className="text-6xl lg:text-7xl font-extrabold text-white leading-tight opacity-0 animate-fadeInUp delay-100">
-                Create Your
+                Think big.
                 <span className="block mt-2 bg-linear-to-r from-emerald-400 via-blue-500 to-pink-500 bg-clip-text text-transparent">
-                  Own Notes 🥢 
+                Start now.
                 </span>
              
               </h1>
