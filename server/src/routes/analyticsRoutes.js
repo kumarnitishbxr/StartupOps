@@ -1,9 +1,9 @@
 import express from "express";
 import {
   analyticsOverview,
-  taskAnalytics,
+  feedbackAnalytics,
   milestoneAnalytics,
-  feedbackAnalytics
+  taskAnalytics
 } from "../Controllers/analyticsController.js";
 
 import founderMiddleware from "../middleware/founderMiddleware.js";
@@ -11,9 +11,10 @@ import founderMiddleware from "../middleware/founderMiddleware.js";
 const analyticsRouter = express.Router();
 
 
-analyticsRouter.get("/startups/:startupId/analytics/overview", founderMiddleware, analyticsOverview);
-analyticsRouter.get("/startups/:startupId/analytics/tasks",founderMiddleware, taskAnalytics);
-analyticsRouter.get("/startups/:startupId/analytics/milestones", founderMiddleware, milestoneAnalytics);
-analyticsRouter.get("/startups/:startupId/analytics/feedback", founderMiddleware, feedbackAnalytics);
+analyticsRouter.get("/:startupId/overview", founderMiddleware, analyticsOverview);
+analyticsRouter.get("/:startupId/tasks",founderMiddleware, taskAnalytics);
+analyticsRouter.get("/:startupId/milestones", founderMiddleware, milestoneAnalytics);
+analyticsRouter.get("/:startupId/feedback", founderMiddleware, feedbackAnalytics);
+
 
 export default analyticsRouter;
