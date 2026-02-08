@@ -43,6 +43,7 @@ const Navbar = () => {
     { name: "Features", href: "#features", icon: HiSparkles },
     { name: "How It Works", href: "#how-it-works", icon: FaChartLine },
     { name: "Demo", href: "#demo", icon: FaRocket },
+     { name: "Finance", href: "/finance", icon: FaChartLine },
   ];
 
   const userMenuItems = isLoggedIn ? [
@@ -247,9 +248,9 @@ const Navbar = () => {
 
               {/* USER INFO - Mobile */}
               {isLoggedIn && (
-                <div className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200">
+                <div className="p-6 bg-linear-to-r from-blue-50 to-purple-50 border-b border-gray-200">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-linear-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
                       <FaUser className="text-white" />
                     </div>
                     <div>
@@ -270,7 +271,7 @@ const Navbar = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-6 py-4 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 transition-all"
+                    className="flex items-center gap-3 px-6 py-4 text-gray-700 hover:bg-linear-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 transition-all"
                   >
                     <link.icon className="text-base" />
                     <span className="font-medium">{link.name}</span>
@@ -296,7 +297,7 @@ const Navbar = () => {
                       className={`flex items-center gap-3 px-6 py-4 transition-all ${
                         item.danger
                           ? "text-red-600 hover:bg-red-50"
-                          : "text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600"
+                          : "text-gray-700 hover:bg-linear-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600"
                       }`}
                     >
                       <item.icon className="text-base" />

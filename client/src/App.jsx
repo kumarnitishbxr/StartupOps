@@ -14,24 +14,33 @@ import StartupList from "./components/startups/StartupList";
 import CreateStartup from "./components/startups/CreateStartup";
 import StartupDashboard from "./components/startups/StartupDashboard";
 
+/* FINANCE MODULE IMPORTS */
+import { FinanceProvider } from "./pages/finance/FinanceContext";
+import FinanceDashboard from "./pages/finance/FinanceDashboard";
+
 function App() {
   return (
     <>
-      <Router>
-        <Routes>
+      <FinanceProvider>
+        <Router>
+          <Routes>
 
-          {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} />
-          {/* <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<RegisterPage />} /> */}
+            {/* Public Routes */}
+            <Route path="/" element={<LandingPage />} />
+            {/* <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<RegisterPage />} /> */}
 
-          {/* Startup Routes */}
-          <Route path="/startups" element={<StartupList />} />
-          <Route path="/startups/create" element={<CreateStartup />} />
-          <Route path="/startups/:id" element={<StartupDashboard />} />
+            {/* Startup Routes */}
+            <Route path="/startups" element={<StartupList />} />
+            <Route path="/startups/create" element={<CreateStartup />} />
+            <Route path="/startups/:id" element={<StartupDashboard />} />
 
-        </Routes>
-      </Router>
+            {/* NEW FINANCE ROUTE */}
+            <Route path="/finance" element={<FinanceDashboard />} />
+
+          </Routes>
+        </Router>
+      </FinanceProvider>
 
       {/* Global Toast Notifications */}
       <ToastContainer
