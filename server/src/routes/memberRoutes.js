@@ -2,7 +2,7 @@
 import express from "express";
 // import { verifyJWT } from "../middlewares/auth.middleware.js";
 // import { requireStartupRole } from "../middlewares/role.middleware.js";
-import founderMiddleware from "../middleware/FounderMiddleware.js";
+import founderMiddleware from "../middleware/founderMiddleware.js";
 import { addMember, getMembers, updateMember, removeMember } from "../Controllers/startupMemberController.js";
 
 const memberRouter = express.Router();
