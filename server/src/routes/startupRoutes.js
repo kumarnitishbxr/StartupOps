@@ -1,6 +1,6 @@
 import express from 'express';
 import { addStartup, getAllStartups, getStartupById, updateStartupById, deleteStartup } from '../Controllers/startupController.js';
-import founderMiddleware from '../middleware/FounderMiddleware.js';
+import founderMiddleware from '../middleware/founderMiddleware.js';
 import optionalMiddleware from '../middleware/optionalMiddleware.js';
 
 const startupRouter = express.Router();
