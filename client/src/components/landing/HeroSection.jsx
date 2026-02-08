@@ -11,6 +11,28 @@ import {
 import { HiSparkles, HiTrendingUp } from "react-icons/hi";
 import { BiTargetLock } from "react-icons/bi";
 import { MdShowChart } from "react-icons/md";
+
+// Analytics Helper Functions
+const trackEvent = (eventName, eventData) => {
+  // Google Analytics 4
+  if (window.gtag) {
+    window.gtag('event', eventName, eventData);
+  }
+  
+  // Mixpanel
+  if (window.mixpanel) {
+    window.mixpanel.track(eventName, eventData);
+  }
+  
+  // Custom Analytics API
+  console.log('Analytics Event:', eventName, eventData);
+  // You can send to your backend:
+  // fetch('/api/analytics', {
+  //   method: 'POST',
+  //   body: JSON.stringify({ event: eventName, data: eventData })
+  // });
+};
+
 const handleScroll = () => {
   const nextSection = document.getElementById("features");
 
@@ -152,12 +174,178 @@ const roleContent = {
 const HeroSection = () => {
   const [role, setRole] = useState("Founder");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [sessionData, setSessionData] = useState({
+    pageLoadTime: Date.now(),
+    roleChanges: [],
+    interactions: [],
+    timeOnPage: 0,
+  });
+  const [roleSelectionCount, setRoleSelectionCount] = useState({
+    Founder: 1, // Initial selection
+    Mentor: 0,
+    Student: 0,
+  });
   const sectionRef = useRef(null);
+  const sessionStartTime = useRef(Date.now());
 
   const smoothMouse = useSpring(mousePosition, {
     damping: 25,
     stiffness: 150
   });
+
+  // Track page load
+  useEffect(() => {
+    trackEvent('hero_section_loaded', {
+      timestamp: new Date().toISOString(),
+      initialRole: 'Founder',
+      userAgent: navigator.userAgent,
+      screenSize: `${window.innerWidth}x${window.innerHeight}`,
+    });
+
+    // Track time spent on page
+    const interval = setInterval(() => {
+      const timeSpent = Math.floor((Date.now() - sessionStartTime.current) / 1000);
+      setSessionData(prev => ({ ...prev, timeOnPage: timeSpent }));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Track role changes
+  const handleRoleChange = (newRole) => {
+    const timestamp = Date.now();
+    const timeFromLoad = timestamp - sessionData.pageLoadTime;
+    const previousRole = role;
+
+    // Update role selection count
+    setRoleSelectionCount(prev => ({
+      ...prev,
+      [newRole]: prev[newRole] + 1
+    }));
+
+    // Update session data
+    setSessionData(prev => ({
+      ...prev,
+      roleChanges: [
+        ...prev.roleChanges,
+        {
+          from: previousRole,
+          to: newRole,
+          timestamp: new Date().toISOString(),
+          timeFromLoad: timeFromLoad,
+        }
+      ]
+    }));
+
+    // Track analytics event
+    trackEvent('role_selected', {
+      role: newRole,
+      previousRole: previousRole,
+      totalSelections: roleSelectionCount[newRole] + 1,
+      timeFromLoad: timeFromLoad,
+      timestamp: new Date().toISOString(),
+      sessionDuration: Math.floor((timestamp - sessionStartTime.current) / 1000),
+    });
+
+    // Track which role is most popular
+    trackEvent('role_engagement', {
+      roleSelectionCount: {
+        ...roleSelectionCount,
+        [newRole]: roleSelectionCount[newRole] + 1
+      },
+      mostSelectedRole: Object.entries({...roleSelectionCount, [newRole]: roleSelectionCount[newRole] + 1})
+        .sort(([,a], [,b]) => b - a)[0][0]
+    });
+
+    setRole(newRole);
+  };
+
+  // Track CTA clicks
+  const handleCTAClick = (ctaType) => {
+    const timestamp = Date.now();
+    const timeFromLoad = timestamp - sessionData.pageLoadTime;
+
+    trackEvent('cta_clicked', {
+      ctaType: ctaType,
+      role: role,
+      timeFromLoad: timeFromLoad,
+      timestamp: new Date().toISOString(),
+      sessionDuration: Math.floor((timestamp - sessionStartTime.current) / 1000),
+    });
+
+    setSessionData(prev => ({
+      ...prev,
+      interactions: [
+        ...prev.interactions,
+        {
+          type: 'cta_click',
+          ctaType: ctaType,
+          role: role,
+          timestamp: new Date().toISOString(),
+        }
+      ]
+    }));
+  };
+
+  // Track feature pill clicks
+  const handleFeatureClick = (featureName) => {
+    trackEvent('feature_explored', {
+      feature: featureName,
+      role: role,
+      timestamp: new Date().toISOString(),
+    });
+
+    setSessionData(prev => ({
+      ...prev,
+      interactions: [
+        ...prev.interactions,
+        {
+          type: 'feature_click',
+          feature: featureName,
+          role: role,
+          timestamp: new Date().toISOString(),
+        }
+      ]
+    }));
+  };
+
+  // Track stat card hover
+  const handleStatHover = (statLabel) => {
+    trackEvent('stat_viewed', {
+      stat: statLabel,
+      role: role,
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  // Track scroll indicator click
+  const handleScrollClick = () => {
+    trackEvent('scroll_indicator_clicked', {
+      role: role,
+      timeOnPage: sessionData.timeOnPage,
+      timestamp: new Date().toISOString(),
+    });
+    handleScroll();
+  };
+
+  // Track when user leaves (visibility change)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        trackEvent('hero_section_exit', {
+          role: role,
+          timeOnPage: sessionData.timeOnPage,
+          roleChanges: sessionData.roleChanges.length,
+          interactions: sessionData.interactions.length,
+          roleSelectionCount: roleSelectionCount,
+          timestamp: new Date().toISOString(),
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [role, sessionData, roleSelectionCount]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -181,6 +369,8 @@ const HeroSection = () => {
   return (
     <section ref={sectionRef} className="relative min-h-screen w-full overflow-hidden bg-black">
       
+
+
       {/* ANIMATED MESH GRADIENT BACKGROUND */}
       <div className="absolute inset-0 -z-30">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
@@ -349,7 +539,8 @@ const HeroSection = () => {
                   <motion.div
                     key={idx}
                     whileHover={{ scale: 1.05, y: -3 }}
-                    className="relative group"
+                    onHoverStart={() => handleStatHover(stat.label)}
+                    className="relative group cursor-pointer"
                   >
                     <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 hover:border-white/20 transition-all duration-300">
                       <stat.icon className={`text-xl text-${stat.color}-400 mb-1.5`} />
@@ -381,7 +572,7 @@ const HeroSection = () => {
                     return (
                       <motion.button
                         key={r}
-                        onClick={() => setRole(r)}
+                        onClick={() => handleRoleChange(r)}
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         className={`relative px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
@@ -400,7 +591,12 @@ const HeroSection = () => {
                         {!isActive && (
                           <div className="absolute inset-0 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"></div>
                         )}
-                        <span className="relative z-10">{r}</span>
+                        <span className="relative z-10 flex items-center gap-1.5">
+                          {r}
+                          {roleSelectionCount[r] > 1 && (
+                            <span className="text-xs opacity-60">({roleSelectionCount[r]})</span>
+                          )}
+                        </span>
                       </motion.button>
                     );
                   })}
@@ -416,6 +612,7 @@ const HeroSection = () => {
               >
                 <motion.a
                   href="/signup"
+                  onClick={() => handleCTAClick('primary')}
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.97 }}
                   className={`group relative px-7 py-3.5 bg-gradient-to-r ${current.gradient} text-white rounded-xl font-semibold text-sm shadow-lg overflow-hidden`}
@@ -429,6 +626,7 @@ const HeroSection = () => {
 
                 <motion.a
                   href="#demo"
+                  onClick={() => handleCTAClick('secondary')}
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.97 }}
                   className="group px-7 py-3.5 bg-white/5 backdrop-blur-sm border border-white/20 text-white rounded-xl font-semibold text-sm hover:bg-white/10 hover:border-white/40 transition-all duration-300 flex items-center gap-2"
@@ -452,7 +650,8 @@ const HeroSection = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1 + idx * 0.1 }}
                     whileHover={{ scale: 1.03 }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full hover:border-white/30 transition-all duration-300"
+                    onClick={() => handleFeatureClick(feature.text)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full hover:border-white/30 transition-all duration-300 cursor-pointer"
                   >
                     <feature.icon className={`text-${feature.color}-400 text-xs`} />
                     <span className="text-white/80 text-xs font-medium">
@@ -635,20 +834,22 @@ const HeroSection = () => {
         transition={{ delay: 2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
       >
-        
         <p className="text-white/40 text-xs uppercase tracking-widest">Scroll</p>
         <motion.div
-         onClick={handleScroll}
-  className="cursor-pointer"
+          onClick={handleScrollClick}
+          className="cursor-pointer"
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="w-5 h-8 border-2 border-white/30 rounded-full flex justify-center pt-1.5"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
-          <motion.div 
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="w-1 h-2 bg-white rounded-full"
-          />
+          <div className="w-5 h-8 border-2 border-white/30 rounded-full flex justify-center pt-1.5 hover:border-white/60 transition-colors">
+            <motion.div 
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="w-1 h-2 bg-white rounded-full"
+            />
+          </div>
         </motion.div>
       </motion.div>
 
