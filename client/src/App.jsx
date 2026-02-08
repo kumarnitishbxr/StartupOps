@@ -2,10 +2,14 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
 import LoginPage from "./pages/auth/Login";
 import RegisterPage from "./pages/auth/Register";
 import { checkAuth } from "./features/authSlice";
+import Navbar from "./components/layout/Navbar";
+import Sidebar from './components/layout/Sidebar'
+import MilestoneForm from "./components/milestones/MilestoneForm";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,11 +24,12 @@ function App() {
     return <div className="text-white text-center mt-20">Checking auth...</div>;
   }
 
+
   return (
     <Routes>
       <Route
         path="/"
-        element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />}
+        element={isAuthenticated ? <Dashboard/> : <Navigate to="/login" replace />}
       />
 
       <Route

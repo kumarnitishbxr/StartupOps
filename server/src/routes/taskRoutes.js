@@ -5,9 +5,9 @@ import founderMiddleware from "../middleware/FounderMiddleware.js";
 const taskRouter = express.Router();
 
 
-taskRouter.post("/startups/:startupId/tasks", founderMiddleware, createTask);
-taskRouter.get("/startups/:startupId/tasks", founderMiddleware, getTasks);
-taskRouter.get("/tasks/:taskId",founderMiddleware, getTaskById);
+taskRouter.post("/:startupId/tasks", founderMiddleware, createTask);
+taskRouter.get("/:startupId/tasks", founderMiddleware, getTasks);
+taskRouter.get("/:taskId",founderMiddleware, getTaskById);
 taskRouter.put("/:taskId",founderMiddleware, updateTask);
 taskRouter.patch("/:taskId/status", founderMiddleware, updateTaskStatus);
 taskRouter.delete("/:taskId", founderMiddleware, deleteTask);

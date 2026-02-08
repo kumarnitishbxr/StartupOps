@@ -1,5 +1,6 @@
 import Button from "../common/Button";
 import clsx from "clsx";
+import React from "react";
 
 const statusStyles = {
   TODO: "bg-gray-200 text-gray-700",
@@ -8,11 +9,11 @@ const statusStyles = {
   BLOCKED: "bg-red-100 text-red-700",
 };
 
-const TaskCard = ({ task, onStatusChange, onDelete }) => {
+const TaskCard = ({ task='work', onStatusChange="false", onDelete="false" }) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow space-y-2">
       <div className="flex justify-between items-start">
-        <h4 className="font-medium">{task.title}</h4>
+        <h4 className="font-medium">{task?.title}</h4>
 
         <span
           className={clsx(
