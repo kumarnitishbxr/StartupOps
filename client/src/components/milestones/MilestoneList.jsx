@@ -4,7 +4,7 @@ import Loader from "../common/Loader";
 import Button from "../common/Button";
 import {
   getMilestones,
-  updateMilestoneStatus,
+  // updateMilestoneStatus,
 } from "../../API/milstoneapi";
 
 const statusMap = {
